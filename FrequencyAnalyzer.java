@@ -1,14 +1,131 @@
 package shannon.arielle;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class FrequencyAnalyzer {
-	private double[][] frequencies;
+	private boolean[][] sKeys, fKeys;
+	private int[] sOrder, fOrder;
+	private ArrayList<ArrayList<Integer>> adj;
 	FrequencyAnalyzer(){
-		frequencies = new double[][]{{16.35, 32.7, 65.41, 130.8, 261.6, 523.3, 1047.0, 2093.0, 4186.0}, {17.32, 34.65, 69.3, 138.6, 277.2, 554.4, 1109.0, 2217.0, 4435.0}, {18.35, 36.71, 73.42, 146.8, 293.7, 587.3, 1175.0, 2349.0, 4699.0}, {19.45, 38.89, 77.78, 155.6, 311.1, 622.3, 1245.0, 2489.0, 4978.0}, {20.6, 41.2, 82.41, 164.8, 329.6, 659.3, 1319.0, 2637.0, 5274.0}, {21.83, 43.65, 87.31, 174.6, 349.2, 698.5, 1397.0, 2794.0, 5588.0}, {23.12, 46.25, 92.5, 185.0, 370.0, 740.0, 1480.0, 2960.0, 5920.0}, {24.5, 49.0, 98.0, 196.0, 392.0, 784.0, 1568.0, 3136.0, 6272.0}, {25.96, 51.91, 103.8, 207.7, 415.3, 830.6, 1661.0, 3322.0, 6645.0}, {27.5, 55.0, 110.0, 220.0, 440.0, 880.0, 1760.0, 3520.0, 7040.0}, {29.14, 58.27, 116.5, 233.1, 466.2, 932.3, 1865.0, 3729.0, 7459.0}, {30.87, 61.74, 123.5, 246.9, 493.9, 987.8, 1976.0, 3951.0, 7902.0}};
-		for(int i=0; i<frequencies.length; i++){
-			for(int j=0; j<frequencies[i].length; j++){
-				System.out.print(frequencies[i][j]+" ");
+		sKeys = new boolean[6][5];
+		fKeys = new boolean[6][5];
+		fOrder = new int[]{10, 3, 8, 1, 6};
+		sOrder = new int[]{6, 1, 8, 3, 10};
+		for(int i=0; i<6; i++){
+			for(int j=0; j<i; j++){
+				sKeys[i][j]=true;
+				fKeys[i][j]=true;
+			}//C C# D Eb E F F# G G# A Bb B
+		}
+		adj = new ArrayList<>();
+		int[] circleOfFifths = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 11, 10, 9, 8};
+		for(int i=0; i<12; i++){adj.add(new ArrayList<Integer>());}
+		for(int i=0; i<12; i++){
+			adj.get(circleOfFifths[i]).add(circleOfFifths[(i-1+12)%12]);
+			adj.get(circleOfFifths[i]).add(circleOfFifths[(i+1)%12]);
+				//(5/14) (6/13) (7/12)
+		}
+		adj.add(new ArrayList<Integer>(Arrays.asList(7, 6, 11)));
+		adj.add(new ArrayList<Integer>(Arrays.asList(6, 7, 5)));
+		adj.add(new ArrayList<Integer>(Arrays.asList(4, 3, 5)));
+		adj.get(5).add(14); adj.get(6).add(13); adj.get(7).add(12);
+		
+		//			0, 			1, 			2, 			3, 				4, 			5, 				6, 				7	
+		//C maj/A min, G maj/E min, D maj/B min, A maj/F# min, E maj/C# min, B maj/G# min, F# maj/D# min, C# maj/A# min
+		//C maj/A min, F maj/D min, Bb maj/G min, Eb maj/C min, Ab maj/F min, Db maj/Bb min, Gb maj/Eb min, Cb maj/Ab min
+								//C# D# F# G# A#
+								//Db Eb Gb Ab Bb
+			
+	}
+	private int flatsError(int[] notes, int key){
+		int tt = 0;
+		for(int i=0; i<5; i++){
+			if (fKeys[key][i]){
+				tt+= notes[fOrder[i]+1];
 			}
-			System.out.println();
+			else{
+				tt+=notes[fOrder[i]];
+			}
+		}
+		return tt;
+	}
+	//C Db D Eb E F Gb G Ab A Bb B
+	private Pair Flats(int[] notes){
+		//Bb (at 10) is the first one
+		//Also, Cb = B and Fb = E
+		int error = 0;
+		int bestkey = 7;
+		//First check for the keys with Cb and Fb
+		int[] drkeys = new int[]{1, 6, 8};
+		for(int i: drkeys){
+			error += notes[i+1];
+		}
+		error += notes[0];
+		if (notes[5]<notes[4]){
+			error+=notes[5];
+		}
+		else{
+			error+=notes[4];
+			bestkey = 6;
+		}
+		for(int i=0; i<6; i++){
+			int tp = flatsError(notes, i);
+			if (tp < error){
+				error = tp;
+				bestkey =i;
+			}
+		}
+		return new Pair(error, bestkey);
+	}
+	private int sharpsError(int[] notes, int key){
+		int tt = 0;
+		for(int i=0; i<5; i++){
+			if (sKeys[key][i]){
+				tt+= notes[sOrder[i]-1];
+			}
+			else{
+				tt+=notes[sOrder[i]];
+			}
+		}
+		return tt;
+	}
+	//C C# D Eb E F F# G G# A Bb B
+	private Pair Sharps(int[] notes){
+		//F# (at 6) is the first one
+		//Also, E# = F and B# = C
+		int error = 0;
+		int bestkey = 7;
+		//First check for the keys with E# and B#
+		int[] drkeys = new int[]{3, 8, 10};
+		for(int i: drkeys){
+			error += notes[i-1];
+		}
+		error += notes[4];
+		if (notes[0]>notes[11]){
+			error+=notes[11];
+		}
+		else{
+			error+=notes[0];
+			bestkey = 6;
+		}
+		for(int i=0; i<6; i++){
+			int tp = sharpsError(notes, i);
+			if (tp < error){
+				error = tp;
+				bestkey =i;
+			}
+		}
+		return new Pair(error, bestkey);
+	}
+	public int key(int[] notes){
+		Pair a = Sharps(notes), b=Flats(notes);
+		if (a.f > b.f){
+			if(b.s ==0){ return 0; }
+			else{ return b.s+7; }
+		}
+		else{
+			return a.s;
 		}
 	}
 }
