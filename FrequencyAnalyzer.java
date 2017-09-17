@@ -1,12 +1,9 @@
 package shannon.arielle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FrequencyAnalyzer {
 	private boolean[][] sKeys, fKeys;
 	private int[] sOrder, fOrder;
-	private ArrayList<ArrayList<Integer>> adj;
 	FrequencyAnalyzer(){
 		sKeys = new boolean[6][5];
 		fKeys = new boolean[6][5];
@@ -18,22 +15,6 @@ public class FrequencyAnalyzer {
 				fKeys[i][j]=true;
 			}//C C# D Eb E F F# G G# A Bb B
 		}
-		adj = new ArrayList<>();
-		int[] circleOfFifths = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 11, 10, 9, 8};
-		for(int i=0; i<12; i++){adj.add(new ArrayList<Integer>());}
-		for(int i=0; i<12; i++){
-			adj.get(circleOfFifths[i]).add(circleOfFifths[(i-1+12)%12]);
-			adj.get(circleOfFifths[i]).add(circleOfFifths[(i+1)%12]);
-				//(5/14) (6/13) (7/12)
-		}
-		adj.add(new ArrayList<Integer>(Arrays.asList(7, 6, 11)));
-		adj.add(new ArrayList<Integer>(Arrays.asList(6, 7, 5)));
-		adj.add(new ArrayList<Integer>(Arrays.asList(4, 3, 5)));
-		adj.get(5).add(14); adj.get(6).add(13); adj.get(7).add(12);
-		
-		//			0, 			1, 			2, 			3, 				4, 			5, 				6, 				7	
-		//C maj/A min, G maj/E min, D maj/B min, A maj/F# min, E maj/C# min, B maj/G# min, F# maj/D# min, C# maj/A# min
-		//C maj/A min, F maj/D min, Bb maj/G min, Eb maj/C min, Ab maj/F min, Db maj/Bb min, Gb maj/Eb min, Cb maj/Ab min
 								//C# D# F# G# A#
 								//Db Eb Gb Ab Bb
 			

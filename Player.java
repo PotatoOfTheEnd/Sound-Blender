@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -60,6 +62,16 @@ public class Player {
 							tpButton.setVisible(false);
 							panel.remove(tpButton);
 							currentFiles.remove(chooser.getSelectedFile());
+							try
+						    {
+						        Clip clip = AudioSystem.getClip();
+						        clip.open(AudioSystem.getAudioInputStream(chooser.getSelectedFile()));
+						        clip.start();
+						    }
+						    catch (Exception exc)
+						    {
+						        exc.printStackTrace(System.out);
+						    }
 							System.out.println("You chose to open this file: " +
 									chooser.getSelectedFile());
 							panel.revalidate();
