@@ -19,8 +19,8 @@ public class FrequencyAnalyzer {
 								//Db Eb Gb Ab Bb
 			
 	}
-	private int flatsError(int[] notes, int key){
-		int tt = 0;
+	private double flatsError(double[] notes, int key){
+		double tt = 0;
 		for(int i=0; i<5; i++){
 			if (fKeys[key][i]){
 				tt+= notes[fOrder[i]+1];
@@ -32,10 +32,10 @@ public class FrequencyAnalyzer {
 		return tt;
 	}
 	//C Db D Eb E F Gb G Ab A Bb B
-	private Pair Flats(int[] notes){
+	private Pair Flats(double[] notes){
 		//Bb (at 10) is the first one
 		//Also, Cb = B and Fb = E
-		int error = 0;
+		double error = 0;
 		int bestkey = 7;
 		//First check for the keys with Cb and Fb
 		int[] drkeys = new int[]{1, 6, 8};
@@ -51,7 +51,7 @@ public class FrequencyAnalyzer {
 			bestkey = 6;
 		}
 		for(int i=0; i<6; i++){
-			int tp = flatsError(notes, i);
+			double tp = flatsError(notes, i);
 			if (tp < error){
 				error = tp;
 				bestkey =i;
@@ -59,7 +59,7 @@ public class FrequencyAnalyzer {
 		}
 		return new Pair(error, bestkey);
 	}
-	private int sharpsError(int[] notes, int key){
+	private int sharpsError(double[] notes, int key){
 		int tt = 0;
 		for(int i=0; i<5; i++){
 			if (sKeys[key][i]){
@@ -72,10 +72,10 @@ public class FrequencyAnalyzer {
 		return tt;
 	}
 	//C C# D Eb E F F# G G# A Bb B
-	private Pair Sharps(int[] notes){
+	private Pair Sharps(double[] notes){
 		//F# (at 6) is the first one
 		//Also, E# = F and B# = C
-		int error = 0;
+		double error = 0;
 		int bestkey = 7;
 		//First check for the keys with E# and B#
 		int[] drkeys = new int[]{3, 8, 10};
@@ -91,7 +91,7 @@ public class FrequencyAnalyzer {
 			bestkey = 6;
 		}
 		for(int i=0; i<6; i++){
-			int tp = sharpsError(notes, i);
+			double tp = sharpsError(notes, i);
 			if (tp < error){
 				error = tp;
 				bestkey =i;
@@ -99,7 +99,7 @@ public class FrequencyAnalyzer {
 		}
 		return new Pair(error, bestkey);
 	}
-	public int key(int[] notes){
+	public int key(double[] notes){
 		Pair a = Sharps(notes), b=Flats(notes);
 		if (a.f > b.f){
 			if(b.s ==0){ return 0; }

@@ -1,8 +1,9 @@
 package shannon.arielle;
 
 public class Pair {
-	public int f, s;
-	Pair(int nf, int ns){
+	public int s;
+	public double f;
+	Pair(double nf, int ns){
 		f= nf; s = ns;
 	}
 	

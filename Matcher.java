@@ -54,7 +54,7 @@ public class Matcher {
 			if (!hasCh[i]){
 				int tp = i;
 				while(tp>0){
-					ret[tp]=stval;
+					ret[stval]=tp;
 					stval++;
 					tp = par[tp];
 				}
